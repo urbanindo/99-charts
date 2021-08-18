@@ -12,29 +12,42 @@ entries:
         My Kind\n  description: Some nice description    \n"
       artifacthub.io/crdsExamples: "- apiVersion: v1\n  kind: MyKind\n  metadata:\n
         \   name: mykind\n  spec:\n    replicas: 1    \n"
-      artifacthub.io/images: "- name: img1\n  image: repo/img1:1.0.0\n- name: img2\n
-        \ image: repo/img2:2.0.0\n  whitelisted: true    \n"
+      artifacthub.io/images: |
+        - name: nginx
+          image: nginx:latest
       artifacthub.io/license: Apache-2.0
-      artifacthub.io/links: "- name: link1\n  url: https://link1.url\n- name: link2\n
-        \ url: https://link2.url    \n"
-      artifacthub.io/maintainers: "- name: user1\n  email: user1@email.com\n- name:
-        user2\n  email: user2@email.com    \n"
+      artifacthub.io/links: "- name: Homepage\n  url: https://99.co\n- name: Source\n
+        \ url: https://urbanindo.github.io/99-charts    \n"
+      artifacthub.io/maintainers: |
+        - name: Ade Mahmud Patoni
+          email: ade.mahmud@99.co
+        - name: Ahmad Ghifari
+          email: ghifari@99.co
+        - name: Andri Muhyidin
+          email: andri.muhyidin@99.co
+        - name: Hadiyan Nurdyana
+          email: hadiyan@99.co
+        - name: Kamila A Widyanto
+          email: kamila@99.co
+        - name: Setyo Legowo
+          email: setyo@99.co
       artifacthub.io/operator: "true"
-      artifacthub.io/operatorCapabilities: Basic Install
+      artifacthub.io/operatorCapabilities: Seamless Upgrades
       artifacthub.io/prerelease: "false"
       artifacthub.io/recommendations: "- url: https://artifacthub.io/packages/helm/artifact-hub/artifact-hub\n-
         url: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
         \   \n"
-      artifacthub.io/signKey: "fingerprint: C874011F0AB405110D02105534365D9472D7468F\nurl:
-        https://keybase.io/hashicorp/pgp_keys.asc "
+      artifacthub.io/signKey: |-
+        fingerprint: C874011F0AB405110D02105534365D9472D7468F
+        url: https://keybase.io/hashicorp/pgp_keys.asc
     apiVersion: v2
-    appVersion: 1.1.0
-    created: "2021-08-18T10:45:39.311993+07:00"
-    description: A Helm chart for Kubernetes
-    digest: 167ec1b68e6a62e7452979898f7d820bbc5a1f01c5626102fcdd70a0267aaaed
+    appVersion: 1.0.0
+    created: "2021-08-18T17:48:56.336464+07:00"
+    description: A Base or general chart for Kubernetes
+    digest: 3137240af51ce24bd3529262cf5d9a96fd6e9d14401841c2f2c3c030c06d399b
     name: base
     type: application
     urls:
     - base-0.1.0.tgz
     version: 0.1.0
-generated: "2021-08-18T10:45:39.310121+07:00"
+generated: "2021-08-18T17:48:56.330925+07:00"
