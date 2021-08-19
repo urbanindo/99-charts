@@ -42,12 +42,12 @@ entries:
         url: https://keybase.io/hashicorp/pgp_keys.asc
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-08-18T18:08:13.028742+07:00"
+    created: "2021-08-19T09:15:40.811821+07:00"
     description: A Base or general chart for Kubernetes
-    digest: 88563f84b585399d0a4277bf2cda9f31788c1afbbfa562f33a9adce198ceb409
+    digest: 0d6c0b639600e496b13b3abbb41491ac198b63b22e2e50142cf510eae719267f
     name: base
     type: application
     urls:
     - base-0.1.0.tgz
     version: 0.1.0
-generated: "2021-08-18T18:08:13.027283+07:00"
+generated: "2021-08-19T09:15:40.809783+07:00"
