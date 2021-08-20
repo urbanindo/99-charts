@@ -1,0 +1,19 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: demo-helm
+  namespace: helm-demo
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: ./charts/base-demo
+      version: '0.1.0'
+      sourceRef:
+        kind: GitRepository
+        name: helm-demp
+        namespace: helm-demo
+      interval: 1m
+  valuesFrom:
+    - kind: ConfigMap
+      name: values

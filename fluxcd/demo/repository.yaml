@@ -1,0 +1,15 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: helm-demp
+  namespace: helm-demo
+spec:
+  interval: 1m
+  url: https://github.com/urbanindo/99-charts.git
+  ref:
+    branch: latihan
+  ignore: |
+    # exclude all
+    /*
+    # include charts directory
+    !/charts/    
