@@ -1,0 +1,11 @@
+{{- if .Values.managedcert.enabled }}
+apiVersion: networking.gke.io/v1beta1
+kind: ManagedCertificate
+metadata:
+  name: {{ include "base-demo.fullname" . }}
+  labels:
+    {{- include "base-demo.labels" . | nindent 4 }}
+spec:
+  domains:
+    - {{ .Values.managedcert.domain }}
+{{- end }}
