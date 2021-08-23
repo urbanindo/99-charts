@@ -1,0 +1,87 @@
+apiVersion: v2
+name: base
+description: A Base or general chart for Kubernetes
+
+# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.1.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
+appVersion: "1.0.0"
+
+annotations:
+  artifacthub.io/changes: |
+    - Added cool feature
+    - Fixed minor bug
+  artifacthub.io/changes: |
+    - kind: added
+      description: Cool feature
+      links:
+        - name: Github Issue
+          url: https://github.com/issue-url
+        - name: Github PR
+          url: https://github.com/pr-url
+    - kind: fixed
+      description: Minor bug
+      links:
+        - name: Github Issue
+          url: https://github.com/issue-url    
+  artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/images: |
+    - name: nginx
+      image: nginx:latest
+  artifacthub.io/crds: |
+    - kind: MyKind
+      version: v1
+      name: mykind
+      displayName: My Kind
+      description: Some nice description    
+  artifacthub.io/crdsExamples: |
+    - apiVersion: v1
+      kind: MyKind
+      metadata:
+        name: mykind
+      spec:
+        replicas: 1    
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/links: |
+    - name: Homepage
+      url: https://99.co
+    - name: Source
+      url: https://urbanindo.github.io/99-charts    
+  artifacthub.io/maintainers: |
+    - name: Ade Mahmud Patoni
+      email: ade.mahmud@99.co
+    - name: Ahmad Ghifari
+      email: ghifari@99.co
+    - name: Andri Muhyidin
+      email: andri.muhyidin@99.co
+    - name: Hadiyan Nurdyana
+      email: hadiyan@99.co
+    - name: Kamila A Widyanto
+      email: kamila@99.co
+    - name: Setyo Legowo
+      email: setyo@99.co
+  artifacthub.io/operator: "true"
+  artifacthub.io/operatorCapabilities: Seamless Upgrades
+  artifacthub.io/prerelease: "false"
+  artifacthub.io/recommendations: |
+    - url: https://artifacthub.io/packages/helm/artifact-hub/artifact-hub
+    - url: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack    
+  artifacthub.io/signKey: |
+    fingerprint: C874011F0AB405110D02105534365D9472D7468F
+    url: https://keybase.io/hashicorp/pgp_keys.asc

@@ -1,0 +1,16 @@
+{{- if .Values.destinationRule.enabled -}}
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+  subsets:
+  - labels:
+      version: environment
+    name: v1
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_CONN
+{{- end }}
