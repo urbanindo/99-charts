@@ -29,7 +29,7 @@ spec:
             query-name: istio-requests-total
       target:
         type: AverageValue
-        averageValue: "QPS_TARGET"
+        averageValue: "{{ .Values.autoscaling.QPStarget }}"
     # {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
     # - type: Resource
     #   resource:

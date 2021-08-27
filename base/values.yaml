@@ -2,27 +2,49 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+## Deployment.yaml #
 replicaCount: 1
 
 nameOverride: ""
 fullnameOverride: ""
 
 image:
-  repository: nginx
+  repository: nginx # {"$imagepolicy": "flux-system:podinfo:name"}
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: latest # {"$imagepolicy": "flux-system:podinfo:tag"}
   pullPolicy: IfNotPresent
 
   imagePullSecrets:
   - name: gcr-json-key
 
-configmap:
+# Sidecar
+sidecar:
   enabled: false
-  name: "demo"
+  sidecarContainers:
+  - name: cloudsql-proxy
+    image: gcr.io/cloudsql-docker/gce-proxy:1.16
+    command: ["/cloud_sql_proxy",
+              "-instances=projectname:zone:dbInstanceName=tcp:dbPort",
+              # If running on a VPC, the Cloud SQL proxy can connect via Private IP. See:
+              # https://cloud.google.com/sql/docs/mysql/private-ip for more info.
+              "-ip_address_types=PRIVATE",
+              "-credential_file=/secrets/service_account.json"]
+    securityContext:
+      runAsUser: 2  # non-root user
+      allowPrivilegeEscalation: false
+    volumeMounts:
+      - name: db-proxy-credentials
+        mountPath: /secrets/
+        readOnly: true
+
+configmap:
+  enabled: true
+  name: "configName"
   
 secret:
   enabled: false
   name: "demo"
+  ## Add secret if sidecar enabled or create using kubectl first if needed ##
 
 podAnnotations:
   kubernetes.io/change-cause: "CHANGE_CAUSE_MESSAGE"
@@ -39,17 +61,100 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    memory: 1024M
+  requests:
+    cpu: 40m
+    memory: 363Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 2
+  QPStarget: 7
+  # targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+hpaAnnotations:
+  enabled: true
+  prometheusServer: http://prometheus-server.monitoring.svc
+
+# Health Check
+livenessCheck:
+  enabled: true
+livenessProbe:
+  failureThreshold: 10
+  httpGet:
+    path: /healthz
+    port: 80
+    scheme: HTTP
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 20
+
+readinessCheck:
+  enabled: true
+readinessProbe:
+  failureThreshold: 10
+  httpGet:
+    path: /healthz
+    port: 80
+    scheme: HTTP
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 10
+
+volumeMounts:
+  - name: configName
+    mountPath: /targetPath
+    subPath: fileName
+
+volumes:
+  - name: configName
+    configMap:
+      name: configName
+      items:
+        - key: fileName
+          path: fileName
+  ## Add volumes if sidecar enabled or needed ##
+  # - name: db-proxy-credentials
+  #         secret:
+  #           secretName: db-proxy-credentials
+  ## End of sidecar volumes
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+## End of deployment.yaml
+
+## service.yaml
+
 service:
   type: ClusterIP
   srcPort: 80
   dstPort: 80
 
-virtualService:
-  enabled: false
+## End of service.yaml
 
-destinationRule:
-  enabled: false
-
+## Ingress
 ingress:
   enabled: false
   className: ""
@@ -65,68 +170,12 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
+## End of ingress
 
-resources:
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 80m
-    memory: 128Mi
-
-autoscaling:
+## Istio Config
+virtualService:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 10
-  # targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-hpaAnnotations:
+destinationRule:
   enabled: true
-  prometheusServer: http://prometheus-server.monitoring.svc
 
-# Health Check
-livenessCheck:
-  enabled: false
-livenessProbe:
-  failureThreshold: 10
-  httpGet:
-    path: /liveness
-    port: 80
-    scheme: HTTP
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 20
-
-readinessCheck:
-  enabled: false
-readinessProbe:
-  failureThreshold: 10
-  httpGet:
-    path: /health
-    port: 80
-    scheme: HTTP
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 10
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: false
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+## End of istio config

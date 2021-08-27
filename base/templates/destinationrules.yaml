@@ -8,7 +8,7 @@ spec:
   host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
   subsets:
   - labels:
-      version: environment
+      version: {{ .Release.Namespace }}
     name: v1
   trafficPolicy:
     loadBalancer:

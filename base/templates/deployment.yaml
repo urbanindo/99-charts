@@ -29,20 +29,18 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
+        {{- if .Values.sidecar.enabled }}
+        {{- toYaml .Values.sidecar.sidecarContainers | nindent 8 }}
+        {{- end }}
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:
-            {{- if .Values.configmap.enabled }}
-            - configMapRef:
-                name: {{ .Values.configmap.name }}
-            {{- end }}
-            {{- if .Values.secret.enabled }}
-            - secretRef:
-                name: {{ .Values.secret.name }}
-            {{- end }}          
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}          
           ports:
             - name: http
               containerPort: {{ .Values.service.srcPort }}
@@ -50,16 +48,10 @@ spec:
           {{- if .Values.livenessCheck.enabled }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
-            # httpGet:
-            #   path: /
-            #   port: http
           {{- end }}
           {{- if .Values.readinessCheck.enabled }}
           readinessProbe:
             {{- toYaml .Values.readinessProbe | nindent 12 }}
-            # httpGet:
-            #   path: /
-            #   port: http
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -75,3 +67,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end}}
