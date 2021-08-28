@@ -11,6 +11,9 @@ spec:
       version: {{ .Values.env.name }}
     name: v1
   trafficPolicy:
-    loadBalancer:
-      simple: LEAST_CONN
+    portLevelSettings:
+    - port:
+        number: {{ .Values.service.dstPort }}
+      loadBalancer:
+        simple: {{ .Values.destinationRule.loadBalanceMode }}
 {{- end }}
