@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+#Define environments
+env:
+  name: env-name #develop, release, prod 
+
 ## Deployment.yaml #
 replicaCount: 1
 
