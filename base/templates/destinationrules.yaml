@@ -8,12 +8,12 @@ spec:
   host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
   subsets:
   - labels:
-      version: {{ .Values.env.name }}
+      version: {{ .Values.env.name | default "develop" }}
     name: v1
-  trafficPolicy:
-    portLevelSettings:
-    - port:
-        number: {{ .Values.service.dstPort }}
-      loadBalancer:
-        simple: {{ .Values.destinationRule.loadBalanceMode }}
+    trafficPolicy:
+      portLevelSettings:
+      - port:
+          number: {{ .Values.service.dstPort }}
+        loadBalancer:
+          simple: {{ .Values.destinationRule.loadBalanceMode | default "ROUND_ROBIN" }}
 {{- end }}
