@@ -53,6 +53,7 @@ secret:
 podAnnotations:
   kubernetes.io/change-cause: "CHANGE_CAUSE_MESSAGE"
   sidecar.istio.io/inject: "true"
+  gitUrl: "https://github.com/urbanindo/99-charts.git"
 
 podSecurityContext: {}
   # fsGroup: 2000
