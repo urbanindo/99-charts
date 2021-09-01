@@ -4,8 +4,12 @@
 
 #Define environments
 env:
+  #define your environment here
   name: env-name #develop, release, prod 
 
+gitRepo:
+  #define you repo-name here e.g backend-service
+  name: none
 ## Deployment.yaml #
 replicaCount: 1
 
