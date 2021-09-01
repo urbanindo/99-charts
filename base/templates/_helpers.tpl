@@ -35,6 +35,7 @@ Common labels
 */}}
 {{- define "base.labels" -}}
 {{ include "base.selectorLabels" . }}
+repo-name: {{ .Values.gitRepo.name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 helm.sh/chart: {{ include "base.chart" . }}
 {{- end }}
