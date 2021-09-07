@@ -40,15 +40,23 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- with .Values.enVar  }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}          
           ports:
-            - name: http
+            - name: {{ .Values.service.name | default "http" }}
               containerPort: {{ .Values.service.srcPort }}
               protocol: TCP
+          {{- with .Values.lifeCycle }}
+          lifecycle:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- if .Values.livenessCheck.enabled }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
