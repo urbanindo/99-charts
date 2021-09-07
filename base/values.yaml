@@ -98,31 +98,27 @@ hpaAnnotations:
   prometheusServer: http://prometheus-server.monitoring.svc
 
 # Health Check
-livenessCheck:
-  enabled: true
-livenessProbe:
-  failureThreshold: 10
-  httpGet:
-    path: /healthz
-    port: 80
-    scheme: HTTP
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 20
+livenessProbe: {}
+  # failureThreshold: 10
+  # httpGet:
+  #   path: /healthzzz
+  #   port: 80
+  #   scheme: HTTP
+  # initialDelaySeconds: 10
+  # periodSeconds: 10
+  # successThreshold: 1
+  # timeoutSeconds: 20
 
-readinessCheck:
-  enabled: true
-readinessProbe:
-  failureThreshold: 10
-  httpGet:
-    path: /healthz
-    port: 80
-    scheme: HTTP
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  successThreshold: 1
-  timeoutSeconds: 10
+readinessProbe: {}
+  # failureThreshold: 10
+  # httpGet:
+  #   path: /healthz
+  #   port: 80
+  #   scheme: HTTP
+  # initialDelaySeconds: 10
+  # periodSeconds: 10
+  # successThreshold: 1
+  # timeoutSeconds: 10
 
 lifeCycle: {}
   # preStop:
