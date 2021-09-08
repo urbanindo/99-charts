@@ -1,0 +1,147 @@
+## Static Job
+## Application name generate by release
+staticJob:
+  enabled: true
+version: demo-1
+
+## Annotations
+annotations:
+  kubernetes.io/change-cause: "CHANGE_CAUSE_MESSAGE"
+  sidecar.istio.io/inject: "true"
+
+## Job Image
+image:
+  repository: "busybox"
+  tag: "1.32"
+  pullPolicy: IfNotPresent
+
+# imagePullSecrets:
+#   - name: demo
+
+## Define Args
+# args: [
+#     "-topic", "PropertyIDs",
+#     "-fromDate", "2018-01-01T00:00:00+07:00",
+#     "-tables", "view_primary_listing_aggregator",
+#     "-status", "online"
+#     ]
+
+## Define Configmap
+# envFrom:
+#   - configMapRef:
+#       name: demo-config
+
+## Job configurations
+restartPolicy: Never
+backoffLimit: 0
+
+## Resources
+#resources:
+#  limits:
+#    cpu: 2
+#    memory: 2000Mi
+#  requests:
+#    cpu: 500m
+#    memory: 500Mi
+
+
+## Optional parameters
+## Volume Mounts
+# volumeMounts:
+#   - name: demo-conf
+#     mountPath: /root/demo.ini
+#     subPath: demo.ini
+
+
+## Security Context
+securityContext:
+  runAsUser: 
+  runAsGroup:
+  fsGroup:
+
+## CronJob
+cronJob:
+  enabled: true
+jobs:
+  # first cron
+  - name: hello-world
+    image:
+      repository: hello-world
+      tag: latest
+      imagePullPolicy: IfNotPresent
+      # imagePullSecrets:
+      #   - name: demo-config
+    schedule: "*/1 * * * *"
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+    concurrencyPolicy: Allow
+    suspend: false
+    restartPolicy: OnFailure
+
+  # second cron
+  - name: hello-ubuntu
+    image:
+      repository: ubuntu
+      tag: latest
+      imagePullPolicy: Always
+    schedule: "*/5 * * * *"
+    command: ["/bin/bash"]
+    args:
+      - "-c"
+      - "echo $(date) - hello from ubuntu"
+    resources:
+      limits:
+        cpu: 50m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+    concurrencyPolicy: Forbid
+    restartPolicy: OnFailure
+
+  # third cron
+  - name: hello-env-var
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 2000
+    image:
+      repository: busybox
+      tag: latest
+      imagePullPolicy: Always
+
+    # optional env vars
+    env:
+    - name: ECHO_VAR
+      value: "busybox"
+    envFrom:
+    - secretRef:
+      name: SECRET_DATA
+    - configMapRef:
+      name: CONFIG_DATA
+    schedule: "* * * * *"
+    command: ["/bin/sh"]
+    args:
+      - "-c"
+      - "echo $(date) - hello from $ECHO_VAR"
+      - "echo $(date) - loaded secret $SECRET_DATA"
+      - "echo $(date) - loaded config $CONFIG_DATA"
+    resources:
+      limits:
+        cpu: 50m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+    concurrencyPolicy: Forbid
+    restartPolicy: Never
+    backoffLimit: 0
+
+    serviceAccount: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
