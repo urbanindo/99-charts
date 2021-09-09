@@ -39,8 +39,9 @@ spec:
           imagePullPolicy: {{ .Values.image.imagePullPolicy }}
           name: {{ .Release.name }}
 
-          {{- if .Values.args }}
-          args: {{ .Values.args }}
+          {{- with .Values.args }}
+          args:
+            {{ toYaml . | indent 8 }}
           {{- end }}
 
           {{- with .Values.volumeMounts }}
