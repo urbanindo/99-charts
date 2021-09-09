@@ -3,9 +3,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Release.Name }}
-  namespace: {{ .Release.namespace }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Release.name }}
+    app: {{ .Release.Name }}
     version: {{ .Values.version }}
 spec:
   template:
@@ -14,9 +14,9 @@ spec:
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    labels:
-      app: {{ .Release.name }}
-      version: {{ .Values.version }}
+    # labels:
+    #   app: {{ .Release.Name }}
+    #   version: {{ .Values.version }}
     spec:
     {{- if .Values.securityContext.runAsUser }}
       securityContext:
@@ -35,9 +35,9 @@ spec:
       {{- end }}
 
       containers:
-        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.imagePullPolicy }}
-          name: {{ .Release.name }}
 
           {{- with .Values.args }}
           args:
@@ -51,7 +51,7 @@ spec:
 
           {{- with .Values.envFrom }}
           envFrom:
-            {{- toYaml . | nindent 8 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
 
       {{- with .Values.nodeSelector }}
