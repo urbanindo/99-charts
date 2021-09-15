@@ -39,9 +39,23 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.imagePullPolicy }}
 
-          {{- with .Values.args }}
-          args:
-            {{ toYaml . | indent 8 }}
+          env:
+          {{- range concat (.Values.global.environment) (.Values.environment | default list)}}
+          - name: {{ .name | quote}}
+            value: {{ .value | quote }}
+          {{- end }}
+
+          {{- if .Values.command }}
+          command: {{ .Values.command }}
+          {{- end }}
+
+          {{- if .Values.args }}
+          args: {{ .Values.args }}
+          {{- end }}
+
+          {{- with .Values.resources }}
+          resources:
+{{ toYaml . | indent 14 }}
           {{- end }}
 
           {{- with .Values.volumeMounts }}

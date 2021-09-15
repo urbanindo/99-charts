@@ -31,6 +31,7 @@ spec:
             app: {{ $release_name }}
             version: {{ $release_version }}
             cron: {{ $job.name }}
+            type: "cronjob"
         spec:
           containers:
           - image: "{{ $job.image.repository }}:{{ $job.image.tag }}"
@@ -54,7 +55,7 @@ spec:
             {{- with $job.args }}
             args:
 {{ toYaml . | indent 12 }}
-              {{- end }}
+            {{- end }}
 
             {{- with $job.resources }}
             resources:
