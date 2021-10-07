@@ -100,7 +100,8 @@ Create the name of the service account to use
 
 {{- define "job.command.tpl" -}}
 {{- with .command }}
-  command: {{ .command }}
+  command: 
+  {{- toYaml . | nindent 2 }}
 {{- end }}
 {{- end }}
 
