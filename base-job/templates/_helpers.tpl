@@ -60,3 +60,133 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "chart.name" -}}
+{{- printf "%s-%s" .Name .Version | replace "+" "_" }}
+{{- end }}
+
+{{- define "metadata.name" -}}
+{{- printf "%s-%s" .root.Release.Name .job.name }}
+{{- end }}
+
+{{- define "label.app" -}}
+{{- printf "%s-%s" .release.Name .job.name }}
+{{- end }}
+
+{{- define "job.annotations.tpl" -}}
+{{- with .annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.image.name" -}}
+{{- printf "%s:%s" .image.repository .image.tag }}
+{{- end }}
+
+{{- define "job.env.tpl" -}}
+{{- with .env }}
+  env:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.envFrom.tpl" -}}
+{{- with .envFrom }}
+  envFrom:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.command.tpl" -}}
+{{- with .command }}
+  command: {{ .command }}
+{{- end }}
+{{- end }}
+
+{{- define "job.args.tpl" -}}
+{{- with .args }}
+  args:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.resources.tpl" -}}
+{{- with .resources }}
+  resources:
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.volumemounts.tpl" -}}
+{{- with .volumeMounts }}
+  volumeMounts:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.nodeSelector.tpl" -}}
+{{- with .nodeSelector }}
+  nodeSelector:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.affinity.tpl" -}}
+{{- with .affinity }}
+  affinity:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.tolerations.tpl" -}}
+{{- with .tolerations }}
+  tolerations:
+  {{- toYaml . | nindent 12 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.volumes.tpl" -}}
+{{- with .volumes }}
+  volumes:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "job.isCron.tpl" -}}
+{{- if .values.cronJob.enabled -}}
+cron: {{ .job.name }}
+type: "cronjob"
+{{- end }}
+{{- end }}
+
+{{- define "job.tpl" -}}
+{{- $release := .release }}
+{{- $values := .values }}
+{{- $job := .job }}
+spec:
+      template:
+        metadata:
+          labels:
+            app: {{ $release.Name }}
+            version: {{ $values.version | quote }}
+            {{- include "job.isCron.tpl" (dict "values" $values "job" $job) | nindent 12}}
+          {{- include "job.annotations.tpl" $job | indent 8}}
+        spec:
+          containers:
+          - image: "{{- include "job.image.name" $job }}"
+            imagePullPolicy: {{ $job.image.imagePullPolicy }}
+            name: {{ $job.name }}
+            {{- include "job.env.tpl" $job | indent 10 }}
+            {{- include "job.envFrom.tpl" $job | indent 10}}
+            {{- include "job.command.tpl" $job | indent 10}}
+            {{- include "job.args.tpl" $job | indent 10}}
+            {{- include "job.resources.tpl" $job | indent 10}}
+            {{- include "job.volumemounts.tpl" $job | indent 10}}
+            {{- include "job.nodeSelector.tpl" $job | indent 10}}
+            {{- include "job.affinity.tpl" $job | indent 10}}
+            {{- include "job.tolerations.tpl" $job | indent 10}}
+          restartPolicy: {{ $job.restartPolicy }}
+          {{- include "job.tolerations.tpl" $job | indent 8}}
+      backoffLimit: {{ $job.backoffLimit }}
+{{- end }}

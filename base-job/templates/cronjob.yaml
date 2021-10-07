@@ -1,21 +1,20 @@
 {{- if .Values.cronJob.enabled -}}
-{{- $chart_name := .Chart.Name }}
-{{- $chart_version := .Chart.Version | replace "+" "_" }}
-{{- $release_name := .Release.Name }}
-{{- $release_version := .Values.version }}
-{{- $release_namespace := .Release.Namespace }}
+{{- $chart := .Chart }}
+{{- $release := .Release }}
+{{- $values := .Values }}
+{{- $root := . }}
 
-{{- range $job := .Values.jobs }}
+{{- range $job := $values.jobs }}
 ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: "{{ $release_name }}-{{ $job.name }}"
-  namespace: {{ $release_namespace }}
+  name: "{{- include "metadata.name" (dict "root" $root "job" $job) }}"
+  namespace: {{ $release.Namespace }}
   labels:
-    app: "{{ $release_name }}-{{ $job.name }}"
-    version: {{ $release_version }}
-    chart: "{{ $chart_name }}-{{ $chart_version }}"
+    app: "{{- include "label.app" (dict "release" $release "job" $job) }}"
+    version: {{ $values.version | quote }}
+    chart: "{{- include "chart.name" $chart }}"
 spec:
   schedule: {{ $job.schedule | quote }}
   failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit }}
@@ -23,75 +22,6 @@ spec:
   concurrencyPolicy: {{ $job.concurrencyPolicy }}
   suspend: {{ $job.suspend }}
   jobTemplate:
-    spec:
-      template:
-        metadata:
-          labels:
-            app: {{ $release_name }}
-            version: {{ $release_version }}
-            cron: {{ $job.name }}
-            type: "cronjob"
-          {{- with $job.annotations }}
-          annotations:
-{{- toYaml . | nindent 12 }}
-          {{- end }}
-        spec:
-          containers:
-          - image: "{{ $job.image.repository }}:{{ $job.image.tag }}"
-            imagePullPolicy: {{ $job.image.imagePullPolicy }}
-            name: {{ $job.name }}
-
-            {{- with $job.env }}
-            env:
-{{ toYaml . | indent 12 }}
-            {{- end }}
-
-            {{- with $job.envFrom }}
-            envFrom:
-{{ toYaml . | indent 12 }}
-            {{- end }}
-
-            {{- with $job.command }}
-            command: {{ $job.command }}
-            {{- end }}
-
-            {{- with $job.args }}
-            args:
-{{ toYaml . | indent 12 }}
-            {{- end }}
-
-            {{- with $job.resources }}
-            resources:
-{{ toYaml . | indent 14 }}
-            {{- end }}
-
-            {{- with $job.volumeMounts }}
-            volumeMounts:
-{{ toYaml . | indent 12 }}
-            {{- end }}
-
-          {{- with $job.nodeSelector }}
-          nodeSelector:
-{{ toYaml . | indent 12 }}
-          {{- end }}
-
-          {{- with $job.affinity }}
-          affinity:
-{{ toYaml . | indent 12 }}
-          {{- end }}
-
-          {{- with $job.tolerations }}
-          tolerations:
-{{ toYaml . | indent 12 }}
-          {{- end }}
-
-          restartPolicy: {{ $job.restartPolicy }}
-
-          {{- with $job.volumes }}
-          volumes:
-{{ toYaml . | indent 12 }}
-          {{- end }}
-          
-      backoffLimit: {{ $job.backoffLimit }}
+    {{- include "job.tpl" (dict "release" $release "values" $values "job" $job) | indent 4}}
 {{- end }}
 {{- end }}
