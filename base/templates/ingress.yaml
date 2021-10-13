@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}} 
-{{- $fullName := include "base.fullname" . -}}
+{{- $fullName := .Release.Name -}}
 {{- $srcPort := .Values.service.srcPort -}}
 {{- $dstPort := .Values.service.dstPort -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
@@ -50,11 +50,11 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: {{ .Release.Name }}
+                name: {{ $fullName }}
                 port:
                   number: {{ $srcPort }}
               {{- else }}
-              serviceName: {{ .Release.Name }}
+              serviceName: {{ $fullName }}
               servicePort: {{ $dstPort }}
               {{- end }}
           {{- end }}
