@@ -3,6 +3,10 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
     {{- include "base.labels" . | nindent 4 }}
 spec:

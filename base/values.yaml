@@ -164,6 +164,7 @@ affinity: {}
 ## service.yaml
 
 service:
+  annotations: {}
   type: ClusterIP
   srcPort: 80
   # name: grpc #default http
