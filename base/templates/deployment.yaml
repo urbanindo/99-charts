@@ -32,6 +32,7 @@ spec:
       serviceAccountName: {{ include "base.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      restartPolicy: {{ .Values.restartPolicy | default "Always" }}
       containers:
         {{- if .Values.sidecar.enabled }}
         {{- toYaml .Values.sidecar.sidecarContainers | nindent 8 }}
