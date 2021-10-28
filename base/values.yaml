@@ -25,6 +25,22 @@ image:
   imagePullSecrets:
   - name: gcr-json-key
 
+initContainers: []
+  # - name: sysctl
+  #   image: busybox:1.31.1
+  #   imagePullPolicy: IfNotPresent
+  #   securityContext:
+  #     privileged: true
+  #     runAsUser: 0
+  #   command: ['sh', '-c', 'sysctl -w fs.inotify.max_user_watches=32768']
+  # - name: initContainers2
+  #   image: busybox:1.31.1
+  #   imagePullPolicy: IfNotPresent
+  #   securityContext:
+  #     privileged: true
+  #     runAsUser: 0
+  #   command: ['sh', '-c', 'sysctl -w fs.inotify.max_user_watches=32768']
+
 # Sidecar
 sidecar:
   enabled: false
