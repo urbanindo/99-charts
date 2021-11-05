@@ -59,7 +59,7 @@ spec:
           {{- end }}
           {{- with .Values.args }}
           args:
-              {{ toYaml . | indent 12 }}
+              {{- toYaml . | nindent 12 }}
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.volumeMounts }}
