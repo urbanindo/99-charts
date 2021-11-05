@@ -188,6 +188,7 @@ spec:
             {{- include "job.affinity.tpl" $job | indent 10}}
             {{- include "job.tolerations.tpl" $job | indent 10}}
           restartPolicy: {{ $job.restartPolicy }}
+          {{- include "job.volumes.tpl" $job | indent 8}}
           {{- include "job.tolerations.tpl" $job | indent 8}}
       backoffLimit: {{ $job.backoffLimit }}
 {{- end }}
