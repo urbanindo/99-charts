@@ -75,9 +75,29 @@ podAnnotations:
   sidecar.istio.io/inject: "true"
   gitUrl: "https://github.com/urbanindo/99-charts.git"
 
-enVar: []
-  # - name: env_name
-  #   value: env_value
+enVar:
+  # Reflection pattern for web services on kubernetes.
+  # See here for more info: https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/
+  - name: MY_POD_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+  - name: MY_POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
+  - name: MY_NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: MY_HOST_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: MY_POD_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
 
 podSecurityContext: {}
   # fsGroup: 2000
