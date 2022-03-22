@@ -205,6 +205,18 @@ service:
   srcPort: 80
   # name: grpc #default http
   dstPort: 80
+  # protocol name of port
+  # e.g. 
+  # protocol: TCP
+  protocol: ""
+  # Optional param for adding additional ports more than 1 port
+  # e.g. 
+  # additionalPorts: 
+  #   - srcPort: 443
+  #     dstPort: 443
+  #     protocol: TCP #default TCP
+  #     name: https #required and cannot be same with another port name
+  additionalPorts: []
 
 ## End of service.yaml
 
