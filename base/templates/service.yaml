@@ -14,7 +14,13 @@ spec:
   ports:
     - port: {{ .Values.service.srcPort }}
       targetPort: {{ .Values.service.dstPort }}
-      protocol: TCP
-      name: {{ .Values.service.name | default "http" }}
+      protocol: {{ default "TCP" .Values.service.protocol }}
+      name: {{ .Values.service.name | default "http" }}    
+    {{- range $additionalPortIndex, $additionalPort := .Values.service.additionalPorts }}
+    - port: {{ $additionalPort.srcPort }}
+      targetPort: {{ $additionalPort.dstPort }}
+      protocol: {{ default "TCP" $additionalPort.protocol }}
+      name: {{ default "http" $additionalPort.name }}    
+    {{- end }}
   selector:
     {{- include "base.selectorLabels" . | nindent 4 }}
