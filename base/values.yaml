@@ -215,7 +215,7 @@ service:
   #   - srcPort: 443
   #     dstPort: 443
   #     protocol: TCP #default TCP
-  #     name: https #default http
+  #     name: https #required and cannot be same with another port name
   additionalPorts: []
 
 ## End of service.yaml

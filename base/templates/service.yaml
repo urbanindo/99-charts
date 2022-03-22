@@ -20,7 +20,7 @@ spec:
     - port: {{ $additionalPort.srcPort }}
       targetPort: {{ $additionalPort.dstPort }}
       protocol: {{ default "TCP" $additionalPort.protocol }}
-      name: {{ default "http" $additionalPort.name }}    
+      name: {{ required ".Values.service.additionalPorts[].name is required and cannot be same with another port name" $additionalPort.name }}    
     {{- end }}
   selector:
     {{- include "base.selectorLabels" . | nindent 4 }}
