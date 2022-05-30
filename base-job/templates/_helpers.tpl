@@ -129,7 +129,7 @@ Create the name of the service account to use
 {{- define "job.nodeSelector.tpl" -}}
 {{- with .nodeSelector }}
   nodeSelector:
-  {{- toYaml . | nindent 2 }}
+  {{- toYaml . | nindent 4 }}
 {{- end }}
 {{- end }}
 
@@ -143,7 +143,7 @@ Create the name of the service account to use
 {{- define "job.tolerations.tpl" -}}
 {{- with .tolerations }}
   tolerations:
-  {{- toYaml . | nindent 12 }}
+  {{- toYaml . | nindent 4 }}
 {{- end }}
 {{- end }}
 
@@ -184,11 +184,10 @@ spec:
             {{- include "job.args.tpl" $job | indent 10}}
             {{- include "job.resources.tpl" $job | indent 10}}
             {{- include "job.volumemounts.tpl" $job | indent 10}}
-            {{- include "job.nodeSelector.tpl" $job | indent 10}}
-            {{- include "job.affinity.tpl" $job | indent 10}}
-            {{- include "job.tolerations.tpl" $job | indent 10}}
           restartPolicy: {{ $job.restartPolicy }}
           {{- include "job.volumes.tpl" $job | indent 8}}
-          {{- include "job.tolerations.tpl" $job | indent 8}}
+        {{- include "job.nodeSelector.tpl" $job | indent 8}}
+        {{- include "job.tolerations.tpl" $job | indent 8}}
+        {{- include "job.affinity.tpl" $job | indent 8}}
       backoffLimit: {{ $job.backoffLimit }}
 {{- end }}
