@@ -14,9 +14,16 @@ spec:
   gateways:
     - mesh
   {{- end }}
+  {{- if .Values.virtualService.hosts }}
+  {{- with .Values.virtualService.hosts }}
+  hosts:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- else }}
   hosts:
     - {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
     - {{ .Release.Name }}
+  {{- end }}
   http:
     - route:
         - destination:
