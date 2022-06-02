@@ -24,6 +24,12 @@ spec:
     - {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
     - {{ .Release.Name }}
   {{- end }}
+  {{- if .Values.virtualService.customHTTPRoutes }}
+  {{- with .Values.virtualService.customHTTPRoutes }}
+  http:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- else }}
   http:
     - route:
         - destination:
@@ -36,4 +42,8 @@ spec:
       {{- with .Values.virtualService.timeout }}
       timeout: {{ . }}
       {{- end }}
+  {{- end }}
+  {{- with .Values.virtualService.extrasSpec }}
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
 {{- end }}
