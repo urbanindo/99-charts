@@ -33,4 +33,7 @@ spec:
       retries:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.virtualService.timeout }}
+      timeout: {{ . }}
+      {{- end }}
 {{- end }}
