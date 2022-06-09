@@ -5,11 +5,45 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  {{- if .Values.virtualService.gateways }}
+  {{- with .Values.virtualService.gateways }}
+  gateways:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- else }}
+  gateways:
+    - mesh
+  {{- end }}
+  {{- if .Values.virtualService.hosts }}
+  {{- with .Values.virtualService.hosts }}
   hosts:
-  - {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- else }}
+  hosts:
+    - {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+    - {{ .Release.Name }}
+  {{- end }}
+  {{- if .Values.virtualService.customHTTPRoutes }}
+  {{- with .Values.virtualService.customHTTPRoutes }}
   http:
-  - route:
-    - destination:
-        host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
-        subset: v1
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- else }}
+  http:
+    - route:
+        - destination:
+            host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
+            subset: v1
+      {{- with .Values.virtualService.retries }}
+      retries:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.virtualService.timeout }}
+      timeout: {{ . }}
+      {{- end }}
+  {{- end }}
+  {{- with .Values.virtualService.extrasSpec }}
+    {{- toYaml . | nindent 2 }}
+  {{- end }}
 {{- end }}
