@@ -250,10 +250,10 @@ virtualService:
   enabled: true
   gateways: []
   hosts: []
-  retries:
-    attempts: 3
-    perTryTimeout: 60s
-    retryOn: gateway-error,connect-failure,refused-stream
+  retries: {}
+    # attempts: 3
+    # perTryTimeout: 60s
+    # retryOn: gateway-error,connect-failure,refused-stream
   timeout: ""
   customHTTPRoutes: [] # https://istio.io/latest/docs/reference/config/networking/virtual-service/#HTTPRoute
     # - route:
