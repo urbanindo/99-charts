@@ -6,7 +6,13 @@
 
 {{- range $job := $values.jobs }}
 ---
+{{- if semverCompare "< 1.8-0" $.Capabilities.KubeVersion.GitVersion }}
+apiVersion: batch/v2alpha1
+{{- else if and (semverCompare ">=1.8-0" $.Capabilities.KubeVersion.GitVersion) (semverCompare "< 1.21-0" $.Capabilities.KubeVersion.GitVersion) }}
 apiVersion: batch/v1beta1
+{{- else if semverCompare ">=1.21-0" $.Capabilities.KubeVersion.GitVersion }}
+apiVersion: batch/v1
+{{- end }}
 kind: CronJob
 metadata:
   name: "{{- include "metadata.name" (dict "root" $root "job" $job) }}"
