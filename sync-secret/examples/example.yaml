@@ -1,0 +1,19 @@
+secretObjects:
+  - secretName: test
+    type: Opaque
+    data:
+      - objectName: test-object1
+        key: test-object1
+      - objectName: test-object2
+        key: test-object2
+
+parameters:
+  roleName: 'test-role'
+  vaultAddress: 'http://vault:8200'
+  objects: |
+    - objectName: "test-object1"
+      secretPath: "secret/path"
+      secretKey: "test-object1"
+    - objectName: "test-object2"
+      secretPath: "secret/path"
+      secretKey: "test-object2"
