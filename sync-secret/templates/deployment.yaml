@@ -1,0 +1,39 @@
+{{- if .Values.deployment.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault-sync-secret
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: vault-sync-secret
+    {{- include "sync-secret.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault-sync-secret
+  template:
+    metadata:
+      labels:
+        app: vault-sync-secret
+        {{- include "sync-secret.labels" . | nindent 8 }}
+      annotations:
+        sidecar.istio.io/inject: 'false'
+    spec:
+      serviceAccountName: vault-auth
+      containers:
+        - name: busybox
+          image: alpine:3.2
+          command: ["/bin/sh", "-c", "tail -f /dev/null"]
+          volumeMounts:
+          - name: secret-sync
+            mountPath: "/mnt/secrets-store/secret-sync"
+            readOnly: true
+      volumes:
+        - name: secret-sync
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "secret-sync"
+{{- end }}
