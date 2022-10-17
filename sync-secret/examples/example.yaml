@@ -8,8 +8,6 @@ secretObjects:
         key: test-object2
 
 parameters:
-  roleName: 'test-role'
-  vaultAddress: 'http://vault:8200'
   objects: |
     - objectName: "test-object1"
       secretPath: "secret/path"
