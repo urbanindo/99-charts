@@ -1,0 +1,5 @@
+apiVersion: v2
+name: sync-secret
+description: A helm chart to install sync-secret
+version: 0.1.0
+appVersion: 1.0.0
