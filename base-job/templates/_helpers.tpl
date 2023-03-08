@@ -154,6 +154,13 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+{{- define "job.imagePullSecrets.tpl" -}}
+{{- with .imagePullSecrets }}
+  imagePullSecrets:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}
+
 {{- define "job.isCron.tpl" -}}
 {{- if .values.cronJob.enabled -}}
 cron: {{ .job.name }}
@@ -186,6 +193,7 @@ spec:
             {{- include "job.volumemounts.tpl" $job | indent 10}}
           restartPolicy: {{ $job.restartPolicy }}
           {{- include "job.volumes.tpl" $job | indent 8}}
+          {{- include "job.imagePullSecrets.tpl" $job | indent 8}}
         {{- include "job.nodeSelector.tpl" $job | indent 8}}
         {{- include "job.tolerations.tpl" $job | indent 8}}
         {{- include "job.affinity.tpl" $job | indent 8}}
