@@ -27,6 +27,7 @@ spec:
       {{- end }}
       labels:
         {{- include "base.selectorLabels" . | nindent 8 }}
+        repo-name: {{ .Values.gitRepo.name }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
