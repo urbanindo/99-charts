@@ -4,6 +4,8 @@ kind: DestinationRule
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "base.labels" . | nindent 4 }}
 spec:
   host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
   subsets:
