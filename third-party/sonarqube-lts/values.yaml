@@ -225,7 +225,7 @@ plugins:
   # netrcCreds: ""
 
   # Set to true to not validate the server's certificate to download plugin
-  noCheckCertificate: false
+  noCheckCertificate: true
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
