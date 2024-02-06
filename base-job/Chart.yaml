@@ -5,7 +5,7 @@ description: A Helm chart for K8s Job and CronJobs
 type: application
 
 version: 0.2.0
-appVersion: "1.16.0"
+appVersion: "1.18.0"
 
 keywords:
   - cron

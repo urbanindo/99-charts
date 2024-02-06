@@ -1,0 +1,33 @@
+serviceAccount:
+  # -- create serviceAccount vault-auth
+  create: true
+
+deployment:
+  # -- enable deployment vault-sync-secret
+  enabled: true
+
+# -- example secretObjects
+secretObjects: []
+  # - secretName: test                ## -- secret-name
+  #   type: Opaque                    ## -- type secret
+  #   data:
+  #     - objectName: test-object1    ## -- object-name
+  #       key: test-object1           ## -- key-name (same with objectname to make it easier)
+  #     - objectName: test-object2    ## -- object-name
+  #       key: test-object2           ## -- key-name (same with objectname to make it easier)
+
+secretObjectsTpl: "{{ .Values.secretObjects | toYaml }}"
+
+# -- example parameters
+parameters: []
+  # roleName: 'test-role'                   ## -- role-name on vault
+  # vaultAddress: 'http://vault:8200'       ## -- vault url
+  # objects: |
+  #   - objectName: "test-object1"
+  #     secretPath: "secret/path"
+  #     secretKey: "test-object1"
+  #   - objectName: "test-object2"
+  #     secretPath: "secret/path"
+  #     secretKey: "test-object2"
+
+parametersObjectsTpl: "{{ .Values.parameters.objects | toYaml }}"

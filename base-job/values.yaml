@@ -33,8 +33,9 @@ jobs:
       repository: asia.gcr.io/core-v3-283604/99-lmp
       tag: detector-develop-9f4baf2-2110010945
       imagePullPolicy: IfNotPresent
-      imagePullSecrets:
-        - name: gcr-json-key
+    # Custome Image Pull secrets
+    imagePullSecrets: []
+      # - name: gcr-json-key
     # the container resources
     resources:
       limits:

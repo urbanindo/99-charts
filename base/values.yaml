@@ -25,6 +25,13 @@ image:
   imagePullSecrets:
   - name: gcr-json-key
 
+# -- @param `updateStrategy` is a Strategy how deployment will Rollout the Updates
+updateStrategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 25%
+  #   maxUnavailable: 0%
+
 initContainers: []
   # - name: sysctl
   #   image: busybox:1.31.1

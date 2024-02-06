@@ -16,6 +16,9 @@ spec:
   selector:
     matchLabels:
       {{- include "base.selectorLabels" . | nindent 6 }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{- toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -24,6 +27,7 @@ spec:
       {{- end }}
       labels:
         {{- include "base.selectorLabels" . | nindent 8 }}
+        repo-name: {{ .Values.gitRepo.name }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

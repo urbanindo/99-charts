@@ -4,6 +4,8 @@ kind: VirtualService
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "base.labels" . | nindent 4 }}
 spec:
   {{- if .Values.virtualService.gateways }}
   {{- with .Values.virtualService.gateways }}
