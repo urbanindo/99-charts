@@ -42,7 +42,7 @@ entries:
         url: https://keybase.io/hashicorp/pgp_keys.asc
     apiVersion: v2
     appVersion: 1.0.0
-    created: "2021-09-09T17:05:01.592576+07:00"
+    created: "2024-06-24T17:55:11.993664+07:00"
     description: A Base or general chart for Kubernetes
     digest: a44a613f5aa25f12b5c418721d48ffa49a7ee783f5d9a139acc163cea521a231
     name: base
@@ -90,7 +90,7 @@ entries:
         url: https://keybase.io/hashicorp/pgp_keys.asc
     apiVersion: v2
     appVersion: 1.16.0
-    created: "2021-09-09T17:05:01.593733+07:00"
+    created: "2024-06-24T17:55:11.995509+07:00"
     description: A Helm chart for K8s Job and CronJobs
     digest: 43d4b4f1b87b03b436c2ffaa284d89b13d2608b8f6132c5ab2e52784474190b8
     keywords:
@@ -101,4 +101,14 @@ entries:
     urls:
     - base-job-0.1.0.tgz
     version: 0.1.0
-generated: "2021-09-09T17:05:01.588012+07:00"
+  sync-secret:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-06-24T17:55:11.995821+07:00"
+    description: A helm chart to install sync-secret
+    digest: d1cbb27d894ff4fe7cad44912109c249bf8f538c99a081e057faeed551162da9
+    name: sync-secret
+    urls:
+    - sync-secret-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-06-24T17:55:11.992009+07:00"
