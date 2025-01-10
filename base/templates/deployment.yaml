@@ -41,6 +41,10 @@ spec:
       initContainers:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if .Values.hostAliases }}
+      hostAliases:
+        {{- toYaml .Values.hostAliases | nindent 8 }}
+      {{- end }}
       containers:
         {{- if .Values.sidecar.enabled }}
         {{- toYaml .Values.sidecar.sidecarContainers | nindent 8 }}
