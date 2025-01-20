@@ -37,7 +37,7 @@ spec:
         - destination:
             host: {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local
             subset: v1
-        weight: 100
+          weight: 100
       {{- with .Values.virtualService.retries }}
       retries:
         {{- toYaml . | nindent 8 }}
