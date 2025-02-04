@@ -48,6 +48,11 @@ initContainers: []
   #     runAsUser: 0
   #   command: ['sh', '-c', 'sysctl -w fs.inotify.max_user_watches=32768']
 
+hostAliases: []
+  # - ip: "10.5.43.121"
+  #   hostnames:
+  #     - "keycloak-develop.id.ninenine.dev"
+
 # Sidecar
 sidecar:
   enabled: false
