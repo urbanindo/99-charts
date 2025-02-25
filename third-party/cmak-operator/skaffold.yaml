@@ -1,0 +1,28 @@
+apiVersion: skaffold/v2beta12
+kind: Config
+metadata:
+  name: cmak-operator
+build:
+  artifacts:
+  - image: eshepelyuk/cmak2zk
+    context: ./cmak2zk
+  local:
+    push: true
+profiles:
+- name: e2e
+  activation:
+  - command: run
+  - command: dev
+  - command: delete
+  deploy:
+    helm:
+      releases:
+      - name: cmak-operator
+        chartPath: .
+        wait: true
+        valuesFiles:
+        - test/e2e/values-e2e.yaml
+        artifactOverrides:
+          image: eshepelyuk/cmak2zk
+        imageStrategy:
+          helm: {}
