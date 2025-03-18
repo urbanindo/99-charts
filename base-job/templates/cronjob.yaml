@@ -23,6 +23,9 @@ metadata:
     chart: "{{- include "chart.name" $chart }}"
 spec:
   schedule: {{ $job.schedule | quote }}
+  {{- if semverCompare ">=1.27-0" $.Capabilities.KubeVersion.GitVersion }}
+  timeZone: {{ $job.timeZone | default "Asia/Jakarta" | quote }}
+  {{- end }}
   failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit }}
   successfulJobsHistoryLimit: {{ $job.successfulJobsHistoryLimit }}
   concurrencyPolicy: {{ $job.concurrencyPolicy }}
