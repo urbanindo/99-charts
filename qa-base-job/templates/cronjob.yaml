@@ -1,0 +1,36 @@
+{{- if .Values.cronJob.enabled -}}
+{{- $chart := .Chart }}
+{{- $release := .Release }}
+{{- $values := .Values }}
+{{- $root := . }}
+
+{{- range $job := $values.jobs }}
+---
+{{- if semverCompare "< 1.8-0" $.Capabilities.KubeVersion.GitVersion }}
+apiVersion: batch/v2alpha1
+{{- else if and (semverCompare ">=1.8-0" $.Capabilities.KubeVersion.GitVersion) (semverCompare "< 1.21-0" $.Capabilities.KubeVersion.GitVersion) }}
+apiVersion: batch/v1beta1
+{{- else if semverCompare ">=1.21-0" $.Capabilities.KubeVersion.GitVersion }}
+apiVersion: batch/v1
+{{- end }}
+kind: CronJob
+metadata:
+  name: "{{- include "metadata.name" (dict "root" $root "job" $job) }}"
+  namespace: {{ $release.Namespace }}
+  labels:
+    app: "{{- include "label.app" (dict "release" $release "job" $job) }}"
+    version: {{ $values.version | quote }}
+    chart: "{{- include "chart.name" $chart }}"
+spec:
+  schedule: {{ $job.schedule | quote }}
+  {{- if semverCompare ">=1.27-0" $.Capabilities.KubeVersion.GitVersion }}
+  timeZone: {{ $job.timeZone | default "UTC" | quote }}
+  {{- end }}
+  failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ $job.successfulJobsHistoryLimit }}
+  concurrencyPolicy: {{ $job.concurrencyPolicy }}
+  suspend: {{ $job.suspend }}
+  jobTemplate:
+    {{- include "job.tpl" (dict "release" $release "values" $values "job" $job) | indent 4}}
+{{- end }}
+{{- end }}
