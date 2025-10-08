@@ -34,18 +34,25 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "base.labels" -}}
-{{ include "base.selectorLabels" . }}
-repo-name: {{ .Values.gitRepo.name }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-helm.sh/chart: {{ include "base.chart" . }}
+{{- $default := dict "app" .Release.Name "version" .Values.env.name "repo-name" .Values.gitRepo.name "app.kubernetes.io/managed-by" .Release.Service "helm.sh/chart" (include "base.chart" .) -}}
+{{- $merged := mustMergeOverwrite (dict) $default -}}
+{{- $merged = mustMergeOverwrite $merged (default (dict) .Values.matchLabels) -}}
+{{- $merged = mustMergeOverwrite $merged (default (dict) .Values.labels) -}}
+{{- range $key, $value := $merged }}
+{{ $key }}: {{ $value }}
+{{- end }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
 {{- define "base.selectorLabels" -}}
-app: {{ .Release.Name }}
-version: {{ .Values.env.name }}
+{{- $default := dict "app" .Release.Name "version" .Values.env.name -}}
+{{- $merged := mustMergeOverwrite (dict) $default -}}
+{{- $merged = mustMergeOverwrite $merged (default (dict) .Values.matchLabels) -}}
+{{- range $key, $value := $merged }}
+{{ $key }}: {{ $value }}
+{{- end }}
 {{- end }}
 
 {{/*
