@@ -16,6 +16,10 @@ replicaCount: 1
 nameOverride: ""
 fullnameOverride: ""
 
+# Extra metadata labels and selector overrides
+labels: {}
+matchLabels: {}
+
 image:
   repository: nginx # {"$imagepolicy": "flux-system:podinfo:name"}
   # Overrides the image tag whose default is the chart appVersion.
@@ -214,6 +218,7 @@ affinity: {}
 ## service.yaml
 
 service:
+  enabled: true
   annotations: {}
   type: ClusterIP
   srcPort: 80
