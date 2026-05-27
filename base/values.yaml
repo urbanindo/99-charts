@@ -214,6 +214,15 @@ tolerations: []
 
 affinity: {}
 
+# dnsConfig allows overriding pod DNS resolver settings.
+# Common use: set ndots:1 to prevent DNS search-domain amplification on external hostnames.
+# Example:
+# dnsConfig:
+#   options:
+#     - name: ndots
+#       value: "1"
+dnsConfig: {}
+
 ## End of deployment.yaml
 
 ## service.yaml
