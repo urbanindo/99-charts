@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cmak.name" . }}
+  labels:
+    {{- include "cmak.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "cmak.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cmak.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: zk
+          image: {{ printf "%s/zookeeper:%s" .Values.imageRegistry .Values.zk.version | quote }}
+          imagePullPolicy: IfNotPresent
+          ports:
+          - name: zk
+            containerPort: 2181
+            protocol: TCP
+          env:
+          - name: ZOO_SERVERS
+            value: "server.1={{ include "cmak.name" . }}.{{ .Release.Namespace }}:2888:3888;2181"
+          - name: ZOO_4LW_COMMANDS_WHITELIST
+            value: "ruok,stat"
+          livenessProbe:
+            exec:
+              command: ['sh', '-c', '[ "$(echo ruok | nc 127.0.0.1 2181)" = "imok" ]']
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 15
+          {{- if or (.Values.zk.resources.limits | empty | not) (.Values.zk.resources.requests | empty | not) }}
+          resources:
+            {{- with .Values.zk.resources.requests }}
+            requests: {{ . | toYaml | nindent 14 }}
+            {{- end }}
+            {{- with .Values.zk.resources.limits }}
+            limits: {{ . | toYaml | nindent 14 }}
+            {{- end }}
+          {{- end }}
+        - name: ui
+          image: {{ printf "%s/hlebalbau/kafka-manager:%s" .Values.imageRegistry .Chart.AppVersion | quote }}
+          imagePullPolicy: IfNotPresent
+          ports:
+          - name: http
+            containerPort: {{ .Values.ui.port }}
+            protocol: TCP
+          args:
+          - "-Dcmak.zkhosts=127.0.0.1:2181"
+          - "-Dhttp.port={{ .Values.ui.port }}"
+          {{- range .Values.ui.extraArgs }}
+          - {{ . | quote }}
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            failureThreshold: 7
+            initialDelaySeconds: 15
+            timeoutSeconds: 15
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            failureThreshold: 7
+            initialDelaySeconds: 45
+            timeoutSeconds: 15
+            periodSeconds: 30
+          {{- if or (.Values.ui.resources.limits | empty | not) (.Values.ui.resources.requests | empty | not) }}
+          resources:
+            {{- with .Values.ui.resources.requests }}
+            requests: {{ . | toYaml | nindent 14 }}
+            {{- end }}
+            {{- with .Values.ui.resources.limits }}
+            limits: {{ . | toYaml | nindent 14 }}
+            {{- end }}
+          {{- end }}
