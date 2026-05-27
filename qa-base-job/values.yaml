@@ -1,0 +1,179 @@
+## This values describe about how to generate Static Job or Cronjob in this chart.
+## Switching the type of job you can do on this config:
+## Example:
+## staticJob:
+##   enabled: true
+## This will generate the Job template, another place you can also create the cronjob template
+## by using this example:
+## cronJob:
+##  enabled: true
+## Or you want to generate both type, just simple use:
+## staticJob:
+##  enabled: true
+## cronJob:
+##  enabled: true
+
+# Static job enabler template
+staticJob:
+  enabled: true
+
+## CronJob enabler template
+cronJob:
+  enabled: false
+
+#version of chart, it will generate
+version: 1.0.0
+
+#LIST OF JOB, this will generate job spec
+jobs:
+  # the job name
+  - name: r123-selenium-job
+    # the image of container
+    image:
+      repository: asia-southeast2-docker.pkg.dev/core-v3-283604/r123-automation/rumah-123-automation
+      tag: automation-web.release-605474f-250619105336 #{"$imagepolicy": "rumah123portal-prod:portal-inp-imprv:tag"}}
+      imagePullPolicy: IfNotPresent
+    # Custome Image Pull secrets
+    imagePullSecrets:
+      - name: artifact-registry
+    # the container resources
+    resources:
+      limits:
+        cpu: 50m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+    # The scheduler task, only available on cron type
+    schedule: "*/1 * * * *"
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+    concurrencyPolicy: Allow
+    suspend: false
+    restartPolicy: OnFailure
+    command: ["npm","run", "conf:docker"]
+    # envFrom:
+    #   - configMapRef:
+    #       name: lmp-config
+    #   - secretRef:
+    #       name: lmp-secret
+    serviceAccount: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+###
+# EXAMPLE FOR THIS VALUE WILL GENERATE
+# ---
+# # Source: base-job/templates/static.yaml
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: "sample-hello-job"
+#   namespace: default
+#   labels:
+#     app: "sample-hello-job"
+#     version: "demo-1"
+#     chart: "base-job-0.1.0"
+# spec:
+#       template:
+#         metadata:
+#           labels:
+#             app: sample
+#             version: "demo-1"
+#             cron: hello-job
+#             type: "cronjob"
+#         spec:
+#           containers:
+#           - image: "asia.gcr.io/core-v3-283604/99-lmp:detector-develop-9f4baf2-2110010945"
+#             imagePullPolicy: IfNotPresent
+#             name: hello-job
+#             envFrom:
+#             - configMapRef:
+#                 name: lmp-config
+#             - secretRef:
+#                 name: lmp-secret
+#             command:
+#             - bin/bash
+#             args:
+#             - -l
+#             - r123
+#             resources:
+#               limits:
+#                 cpu: 50m
+#                 memory: 64Mi
+#               requests:
+#                 cpu: 50m
+#                 memory: 64Mi
+#           restartPolicy: OnFailure
+#       backoffLimit:
+# ---
+# # Source: base-job/templates/cronjob.yaml
+# apiVersion: batch/v1beta1
+# kind: CronJob
+# metadata:
+#   name: "sample-hello-job"
+#   namespace: default
+#   labels:
+#     app: "sample-hello-job"
+#     version: "demo-1"
+#     chart: "base-job-0.1.0"
+# spec:
+#   schedule: "*/1 * * * *"
+#   failedJobsHistoryLimit: 1
+#   successfulJobsHistoryLimit: 3
+#   concurrencyPolicy: Allow
+#   suspend: false
+#   jobTemplate:
+#     spec:
+#           template:
+#             metadata:
+#               labels:
+#                 app: sample
+#                 version: "demo-1"
+#                 cron: hello-job
+#                 type: "cronjob"
+#             spec:
+#               containers:
+#               - image: "asia.gcr.io/core-v3-283604/99-lmp:detector-develop-9f4baf2-2110010945"
+#                 imagePullPolicy: IfNotPresent
+#                 name: hello-job
+#                 envFrom:
+#                 - configMapRef:
+#                     name: lmp-config
+#                 - secretRef:
+#                     name: lmp-secret
+#                 command:
+#                 - bin/bash
+#                 args:
+#                 - -l
+#                 - r123
+#                 resources:
+#                   limits:
+#                     cpu: 50m
+#                     memory: 64Mi
+#                   requests:
+#                     cpu: 50m
+#                     memory: 64Mi
+#               restartPolicy: OnFailure
+#           backoffLimit:
+# ---
+# # Source: base-job/templates/tests/test-connection.yaml
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: "sample-base-job-test-connection"
+#   labels:
+#     helm.sh/chart: base-job-0.1.0
+#     app.kubernetes.io/name: base-job
+#     app.kubernetes.io/instance: sample
+#     app.kubernetes.io/version: "1.16.0"
+#     app.kubernetes.io/managed-by: Helm
+#   annotations:
+#     "helm.sh/hook": test
+# spec:
+#   containers:
+#     - name: wget
+#       image: busybox
+#       command: ['wget']
+#       args: ['sample-base-job:80']
+#   restartPolicy: Never
