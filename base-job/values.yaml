@@ -24,6 +24,36 @@ cronJob:
 #version of chart, it will generate
 version: demo-1
 
+# Environment variables applied to every Job and CronJob Pod.
+# Per-job variables can still be added with jobs[].env.
+enVar:
+  # Reflection pattern for jobs on Kubernetes.
+  - name: MY_POD_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+  - name: MY_POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
+  - name: MY_NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: MY_HOST_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: MY_POD_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  # Set by the Job controller on the running Pod.
+  - name: MY_JOB_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.labels['job-name']
+
 #LIST OF JOB, this will generate job spec
 jobs:
   # the job name

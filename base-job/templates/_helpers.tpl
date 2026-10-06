@@ -84,10 +84,15 @@ Create the name of the service account to use
 {{- printf "%s:%s" .image.repository .image.tag }}
 {{- end }}
 
-{{- define "job.env.tpl" -}}
-{{- with .env }}
+{{- define "job.env.tpl" }}
+{{ if or .values.enVar .job.env }}
   env:
-  {{- toYaml . | nindent 2 }}
+{{- with .values.enVar }}
+{{- toYaml . | nindent 4 }}
+{{- end }}
+{{- with .job.env }}
+{{- toYaml . | nindent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
 
@@ -185,7 +190,7 @@ spec:
           - image: "{{- include "job.image.name" $job }}"
             imagePullPolicy: {{ $job.image.imagePullPolicy }}
             name: {{ $job.name }}
-            {{- include "job.env.tpl" $job | indent 10 }}
+            {{- include "job.env.tpl" (dict "values" $values "job" $job) | indent 10 }}
             {{- include "job.envFrom.tpl" $job | indent 10}}
             {{- include "job.command.tpl" $job | indent 10}}
             {{- include "job.args.tpl" $job | indent 10}}
